@@ -170,13 +170,47 @@ do
 	version = tonumber(version) or 0
 	major = version + (tonumber(major) or 0)/10
 	minor = major + (tonumber(minor) or 0)/100
-	
+
 	function libPublic:getGameVersion()
 		return version
 	end
-	
+
 	function libPublic:getGameVersionAndPatch()
 		return minor
+	end
+end
+
+-- Flavor detection from TOC metadata (X-Flavor: Vanilla, TBC, Wrath, Cata, Mainline)
+-- This supplements getGameVersion() with explicit flavor awareness for Classic variants
+do
+	local flavor = C_AddOns.GetAddOnMetadata(LIBRARY_NAME, "X-Flavor") or "Mainline"
+	local flavorMap = {
+		Vanilla = 1,
+		TBC = 2,
+		Wrath = 3,
+		Cata = 4,
+		Mainline = 10
+	}
+	local flavorNum = flavorMap[flavor] or 10
+
+	function libPublic:getFlavor()
+		return flavor
+	end
+
+	function libPublic:isVanilla()
+		return flavorNum == 1
+	end
+
+	function libPublic:isTBC()
+		return flavorNum == 2
+	end
+
+	function libPublic:isClassicEra()
+		return flavorNum <= 2  -- Vanilla or TBC
+	end
+
+	function libPublic:isRetail()
+		return flavorNum >= 10
 	end
 end
 
@@ -4142,11 +4176,11 @@ function module.frame()
 		
 		helpAddObject(  0,   17, "font#tl:5:%y#v:GameFontNormalLarge#" .. L["CT_Library/Help/About/Heading"]); -- About CTMod
 		
-		helpAddObject( -5, 2*14, "font#tl:10:%y#s:0:%s#l:13:0#r#" .. L["CT_Library/Help/About/Credits"] .. "#" .. textColor1 .. ":l");  -- Two lines giving credits to Cide, TS, Resike and Dahk
+		helpAddObject( -5, 3*14, "font#tl:10:%y#s:0:%s#l:13:0#r#" .. L["CT_Library/Help/About/Credits"] .. "#" .. textColor1 .. ":l");  -- Three lines giving credits to Cide, TS, Resike, Dahk and Ozy
 		
 		helpAddObject(-15,   14, "font#tl:10:%y#s:0:%s#l:13:0#r#" .. L["CT_Library/Help/About/Updates"] .. "#" .. textColor1 .. ":l");  -- "Updates are available at:"
 		helpAddObject( -5,   14, "font#tl:30:%y#s:0:%s#l:13:0#CurseForge.com/WoW/Addons/CTMod# " .. textColor0 .. ":l:280");
-		helpAddObject( -5,   14, "font#tl:30:%y#s:0:%s#l:13:0#GitHub.com/DDCorkum/CTMod# " .. textColor0 .. ":l:280");
+		helpAddObject( -5,   14, "font#tl:30:%y#s:0:%s#l:13:0#GitHub.com/Ozy311/CTMod# " .. textColor0 .. ":l:280");
 		helpAddObject( -5,   14, "font#tl:30:%y#s:0:%s#l:13:0#WoWInterface.com/downloads/info3826-CTMod.html# " .. textColor0 .. ":l:280");
 		
 	

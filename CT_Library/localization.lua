@@ -49,7 +49,8 @@ Right click to reset]=]
 L["CT_Library/Tooltip/RESIZE"] = [=[Left click to resize
 Right click to reset]=]
 L["CT_Library/Help/About/Credits"] = [=[CTMod originated in Vanilla by Cide and TS
-Resike and Dahk joined the team in '14 and '17]=]
+Resike and Dahk joined the team in '14 and '17
+TBC Anniversary fork maintained by Ozy in '25]=]
 L["CT_Library/Help/About/Heading"] = "About CTMod"
 L["CT_Library/Help/About/Updates"] = "Updates are available at:"
 L["CT_Library/Help/Heading"] = "Help"
