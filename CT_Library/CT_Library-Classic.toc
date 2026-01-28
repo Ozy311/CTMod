@@ -1,4 +1,4 @@
-## Interface: 11506
+## Interface: 11508
 ## Version: 11.0.2.2
 ## Title: CT_Library |cFFCC6600CTMod|r
 ## Notes: Required for all CTMod modules
@@ -8,12 +8,14 @@
 ## AddonCompartmentFuncOnEnter: CTMod_OnAddonCompartmentEnter
 ## AddonCompartmentFuncOnLeave: CTMod_OnAddonCompartmentLeave
 ## IconTexture: Interface\Addons\CT_Library\Images\minimapIcon
+## X-Flavor: Vanilla
 
 Libs\LibStub\LibStub.lua
 Libs\TaintLess.xml
 Libs\LibDeflate.lua
 Libs\Ace3\AceSerializer-3.0.lua
 
+CT_Library_Compatibility.lua
 CT_Library.lua
 localization.lua
 CT_Library_TitanPlugin.lua
