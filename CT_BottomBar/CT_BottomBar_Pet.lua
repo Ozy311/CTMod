@@ -10,7 +10,13 @@
 -- the CTMod Team. Thank you.                 --
 ------------------------------------------------
 
+-- Skip on Dragonflight+ (new pet bar system)
 if CT_BottomBar:getGameVersion() >= 10 then
+	return
+end
+
+-- Skip on TBC/Classic Era - PetActionBarFrame doesn't exist or has different structure
+if CT_BottomBar:getGameVersion() < 3 then
 	return
 end
 

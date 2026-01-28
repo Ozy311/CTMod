@@ -16,6 +16,12 @@
 
 local module = _G.CT_BottomBar
 
+-- Skip on TBC/Classic Era - StatusTrackingBarManager and StatusTrackingManagerMixin
+-- don't exist. TBC has a completely different XP/Rep bar system.
+if module:getGameVersion() < 3 then
+	return
+end
+
 local ctRelativeFrame = module.ctRelativeFrame
 local appliedOptions
 

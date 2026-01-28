@@ -84,13 +84,13 @@ local function CT_PartyFrame_OnAddonLoaded()
 			frame.ManaBar:HookScript("OnValueChanged", CT_PartyFrame_TextStatusBar_UpdateTextString)
 			frame.ManaBar.type = "mana"
 		end
-	else
-		-- prior to WoW 10.x
+	elseif PartyMemberFrame1 then
+		-- prior to WoW 10.x (Wrath, Cata Classic, etc.) - requires PartyMemberFrame1-4
 		CreateFrame("Button", "CT_PartyFrame1", PartyMemberFrame1, "CT_PartyFrameTemplate", 1)
 		CreateFrame("Button", "CT_PartyFrame2", PartyMemberFrame2, "CT_PartyFrameTemplate", 2)
 		CreateFrame("Button", "CT_PartyFrame3", PartyMemberFrame3, "CT_PartyFrameTemplate", 3)
 		CreateFrame("Button", "CT_PartyFrame4", PartyMemberFrame4, "CT_PartyFrameTemplate", 4)
-		
+
 		CT_PartyFrame1:SetPoint("CENTER", "PartyMemberFrame1HealthBar")
 		CT_PartyFrame2:SetPoint("CENTER", "PartyMemberFrame2HealthBar")
 		CT_PartyFrame3:SetPoint("CENTER", "PartyMemberFrame3HealthBar")
@@ -154,11 +154,15 @@ local function UpdatePartyFrameClassColors()
 	if PartyFrameMixin then
 		-- WoW 10.x
 		for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
-			if (CT_UnitFramesOptions.partyClassColor ~= false and UnitExists(frame.unit)) then
-				local r, g, b = GetClassColor(select(2,UnitClass(frame.unit)))
-				frame.Name:SetTextColor(r or 1, g or 0.82, b or 0)
-			else
-				frame.Name:SetTextColor(1,0.82,0)
+			-- frame.Name may not exist in all Classic versions
+			local nameFrame = frame.Name or frame.name
+			if nameFrame then
+				if (CT_UnitFramesOptions.partyClassColor ~= false and UnitExists(frame.unit)) then
+					local r, g, b = GetClassColor(select(2,UnitClass(frame.unit)))
+					nameFrame:SetTextColor(r or 1, g or 0.82, b or 0)
+				else
+					nameFrame:SetTextColor(1,0.82,0)
+				end
 			end
 		end
 	else

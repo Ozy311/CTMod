@@ -339,7 +339,13 @@ local setActionPage_unsecure = function(self, page)
 	-- Blizzard doesn't update the page number font string on the
 	-- action bar arrows when you get into a vehicle, even though
 	-- the game has changed the action bar page to 1 (GetActionBarPage() == 1).
-	(MainMenuBarPageNumber or MainMenuBarArtFrame and MainMenuBarArtFrame.PageNumber or MainMenuBar.ActionBarPageNumber.Text):SetText(GetActionBarPage());   --Changed in WoW 8.0.1
+	-- Note: TBC/Classic may not have all of these frames, so we check each carefully
+	local pageText = MainMenuBarPageNumber
+		or (MainMenuBarArtFrame and MainMenuBarArtFrame.PageNumber)
+		or (MainMenuBar and MainMenuBar.ActionBarPageNumber and MainMenuBar.ActionBarPageNumber.Text);
+	if pageText and pageText.SetText then
+		pageText:SetText(GetActionBarPage());   --Changed in WoW 8.0.1
+	end
 
 
 	-- Update our key bindings list if the window is visible.
@@ -1405,16 +1411,16 @@ function group:updateDragframePosition()
 	end
 
 	dragframe:ClearAllPoints();
-	if (objectTL) then
+	if (objectTL and objects[objectTL] and objects[objectTL].button) then
 		dragframe:SetPoint("TOPLEFT", objects[objectTL].button, -offsetLeft, offsetTop);
 	end
-	if (objectTR) then
+	if (objectTR and objects[objectTR] and objects[objectTR].button) then
 		dragframe:SetPoint("TOPRIGHT", objects[objectTR].button, offsetRight, offsetTop);
 	end
-	if (objectBL) then
+	if (objectBL and objects[objectBL] and objects[objectBL].button) then
 		dragframe:SetPoint("BOTTOMLEFT", objects[objectBL].button, -offsetLeft, -offsetBottom);
 	end
-	if (objectBR) then
+	if (objectBR and objects[objectBR] and objects[objectBR].button) then
 		dragframe:SetPoint("BOTTOMRIGHT", objects[objectBR].button, offsetRight, -offsetBottom);
 	end
 
@@ -1502,16 +1508,16 @@ function group:updateOverlayPosition()
 	end
 
 	overlay:ClearAllPoints();
-	if (objectTL) then
+	if (objectTL and objects[objectTL] and objects[objectTL].button) then
 		overlay:SetPoint("TOPLEFT", objects[objectTL].button, -(offsetLeft + edgeSize), (offsetTop + edgeSize));
 	end
-	if (objectTR) then
+	if (objectTR and objects[objectTR] and objects[objectTR].button) then
 		overlay:SetPoint("TOPRIGHT", objects[objectTR].button, (offsetRight + edgeSize), (offsetTop + edgeSize));
 	end
-	if (objectBL) then
+	if (objectBL and objects[objectBL] and objects[objectBL].button) then
 		overlay:SetPoint("BOTTOMLEFT", objects[objectBL].button, -(offsetLeft + edgeSize), -(offsetBottom + edgeSize));
 	end
-	if (objectBR) then
+	if (objectBR and objects[objectBR] and objects[objectBR].button) then
 		overlay:SetPoint("BOTTOMRIGHT", objects[objectBR].button, (offsetRight + edgeSize), -(offsetBottom + edgeSize));
 	end
 	-- Set frame level of the overlay frame. Should be at or just above the postitioning frame.

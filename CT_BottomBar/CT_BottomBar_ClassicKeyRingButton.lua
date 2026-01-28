@@ -16,6 +16,12 @@
 local _G = getfenv(0);
 local module = _G.CT_BottomBar;
 
+-- Skip on TBC/Classic Era - Blizzard's Keyring.lua expects parent to have Layout() method
+-- which CTMod's frame doesn't provide, causing errors when KeyRingButton is shown
+if module:getGameVersion() < 3 then
+	return
+end
+
 local ctRelativeFrame = module.ctRelativeFrame;
 local appliedOptions;
 

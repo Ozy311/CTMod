@@ -195,8 +195,11 @@ local function override_ShowFrames()
 					alpha = frame.ctSaveAlpha;
 					mouse = frame.ctSaveMouse;
 				end
-				module.frame_SetAlpha(frame, alpha);
-				if (not (frame:IsProtected() and inCombatLockdown)) then
+				-- Guard against nil alpha/mouse (can happen on TBC/Classic)
+				if alpha ~= nil then
+					module.frame_SetAlpha(frame, alpha);
+				end
+				if (not (frame:IsProtected() and inCombatLockdown)) and mouse ~= nil then
 					module.frame_EnableMouse(frame, mouse);
 				end
 			end

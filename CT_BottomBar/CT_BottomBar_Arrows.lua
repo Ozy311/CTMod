@@ -10,7 +10,14 @@
 -- the CTMod Team. Thank you.                 --
 ------------------------------------------------
 
+-- Skip on Dragonflight+ (new action bar system)
 if CT_BottomBar:getGameVersion() >= 10 then
+	return
+end
+
+-- Skip on TBC/Classic Era - ActionBarUpButton, ActionBarDownButton, and
+-- MainMenuBarPageNumber don't exist or have different structure
+if CT_BottomBar:getGameVersion() < 3 then
 	return
 end
 

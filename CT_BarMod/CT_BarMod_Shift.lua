@@ -25,7 +25,15 @@ local module = select(2, ...);
 -- End Initialization
 --------------------------------------------
 
+-- Skip on Dragonflight+ (new party frame system)
 if module:getGameVersion() >= 10 then
+	CT_BarMod_Shift_Init = nop
+	return
+end
+
+-- Skip on TBC/Classic Era - PartyMemberFrame1 and StanceBarFrame have
+-- different structure or don't exist at all in these versions
+if module:getGameVersion() < 3 then
 	CT_BarMod_Shift_Init = nop
 	return
 end

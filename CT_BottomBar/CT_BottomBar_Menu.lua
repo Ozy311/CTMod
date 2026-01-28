@@ -34,6 +34,12 @@
 local _G = getfenv(0);
 local module = _G.CT_BottomBar;
 
+-- Skip on TBC/Classic Era - Micro button manipulation triggers EditModeManager errors
+-- in MicroMenuContainer due to incompatible UI architecture
+if module:getGameVersion() < 3 then
+	return
+end
+
 local ctAddon;
 local ctRelativeFrame = module.ctRelativeFrame;
 local appliedOptions;

@@ -974,6 +974,10 @@ local function setActionBindings(event)
 				local baseNum = (groupNum - 1) * 12;
 				for buttonNum = 1, 12 do
 					local buttonObj = buttonObjs[buttonNum];
+					-- Skip if button object doesn't exist (can happen in some Classic versions)
+					if not buttonObj then
+						break;
+					end
 					-- Get the action name associated with this button (eg. "ACTIONBUTTON1")
 					local action = buttonObj.actionName .. buttonNum;
 					if (useDefault) then

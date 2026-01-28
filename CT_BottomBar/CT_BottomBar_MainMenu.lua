@@ -136,12 +136,12 @@ function module:hideTexturesBackground(hide)
 			-- Retail
 			MainMenuBarArtFrameBackground:Hide();
 		else
-			-- Classic
-			MainMenuBarTexture0:Hide();
-			MainMenuBarTexture1:Hide();
-			StanceBarLeft:SetAlpha(0);
-			StanceBarMiddle:SetAlpha(0);
-			StanceBarRight:SetAlpha(0);
+			-- Classic (Wrath+) - TBC doesn't have these textures
+			if MainMenuBarTexture0 then MainMenuBarTexture0:Hide(); end
+			if MainMenuBarTexture1 then MainMenuBarTexture1:Hide(); end
+			if StanceBarLeft then StanceBarLeft:SetAlpha(0); end
+			if StanceBarMiddle then StanceBarMiddle:SetAlpha(0); end
+			if StanceBarRight then StanceBarRight:SetAlpha(0); end
 		end
 		hidMainBackground = true;
 	else
@@ -151,12 +151,12 @@ function module:hideTexturesBackground(hide)
 				-- Retail
 				MainMenuBarArtFrameBackground:Show();
 			else
-				-- Classic
-				MainMenuBarTexture0:Show();
-				MainMenuBarTexture1:Show();
-				StanceBarLeft:SetAlpha(1);
-				StanceBarMiddle:SetAlpha(1);
-				StanceBarRight:SetAlpha(1);
+				-- Classic (Wrath+) - TBC doesn't have these textures
+				if MainMenuBarTexture0 then MainMenuBarTexture0:Show(); end
+				if MainMenuBarTexture1 then MainMenuBarTexture1:Show(); end
+				if StanceBarLeft then StanceBarLeft:SetAlpha(1); end
+				if StanceBarMiddle then StanceBarMiddle:SetAlpha(1); end
+				if StanceBarRight then StanceBarRight:SetAlpha(1); end
 			end
 			hidMainBackground = false;
 		end
@@ -210,18 +210,21 @@ end
 
 local animFlag;
 
-MainMenuBar.slideOut:HookScript("OnPlay",
-	function(self)
-		animFlag = true;
-		module:animStarted();
-	end
-);
-MainMenuBar.slideOut:HookScript("OnFinished",
-	function(self)
-		animFlag= false;
-		module:animStopped();
-	end
-);
+-- MainMenuBar.slideOut only exists in certain versions (not in Classic/TBC)
+if MainMenuBar.slideOut then
+	MainMenuBar.slideOut:HookScript("OnPlay",
+		function(self)
+			animFlag = true;
+			module:animStarted();
+		end
+	);
+	MainMenuBar.slideOut:HookScript("OnFinished",
+		function(self)
+			animFlag = false;
+			module:animStopped();
+		end
+	);
+end
 
 function module:isMainMenuBarAnimating()
 	return animFlag;

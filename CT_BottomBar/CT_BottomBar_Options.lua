@@ -61,12 +61,18 @@ local function updateBarWidgets()
 			if (not obj.settings.hideFromBarList) then
 				if (obj.settings.noHideOption) then
 					-- Don't show hide checkbox for this bar (not allowing user to force hide/show).
-					frame[obj.optionName]:Hide();
-				else
-					if (frame["enable" .. obj.optionName]:GetChecked()) then
-						frame[obj.optionName]:Show();
-					else
+					if frame[obj.optionName] then
 						frame[obj.optionName]:Hide();
+					end
+				else
+					local enableCheckbox = frame["enable" .. obj.optionName];
+					local hideCheckbox = frame[obj.optionName];
+					if enableCheckbox and hideCheckbox then
+						if (enableCheckbox:GetChecked()) then
+							hideCheckbox:Show();
+						else
+							hideCheckbox:Hide();
+						end
 					end
 				end
 			end
