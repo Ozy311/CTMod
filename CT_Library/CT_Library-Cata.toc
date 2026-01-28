@@ -8,12 +8,14 @@
 ## AddonCompartmentFuncOnEnter: CTMod_OnAddonCompartmentEnter
 ## AddonCompartmentFuncOnLeave: CTMod_OnAddonCompartmentLeave
 ## IconTexture: Interface\Addons\CT_Library\Images\minimapIcon
+## X-Flavor: Cata
 
 Libs\LibStub\LibStub.lua
 Libs\TaintLess.xml
 Libs\LibDeflate.lua
 Libs\Ace3\AceSerializer-3.0.lua
 
+CT_Library_Compatibility.lua
 CT_Library.lua
 localization.lua
 CT_Library_TitanPlugin.lua
