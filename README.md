@@ -143,6 +143,51 @@ The same pattern is applied to `ACTIVE_TALENT_GROUP_CHANGED` registration (line 
 
 ---
 
+### Fix 4: Action Bar Click Handling
+
+**File:** `CT_BarMod/CT_BarMod_ActionButton.lua`
+
+**Symptom:**
+```
+Action bar buttons don't respond to clicks - abilities won't cast
+```
+
+**Root cause:**
+
+TBC Anniversary Edition runs on a newer game engine (closer to Retail/Dragonflight than original TBC Classic). This engine requires action buttons to register for **both** mouse-up AND mouse-down events. The original CTMod code only registered for mouse-up events, which works on older clients but fails silently on the newer engine.
+
+Additionally, `SecureHandlerWrapScript` calls in `CT_BarMod_Use.lua` were causing "Invalid access of managed environments table" errors on TBC Anniversary due to differences in secure frame handling.
+
+**The fix (CT_BarMod_ActionButton.lua, lines 517-522):**
+
+```lua
+-- TBC/Classic Era: Register for both up AND down click events
+-- TBC Anniversary runs on a newer engine that requires both (like Retail/Dragonflight)
+-- See: https://github.com/Stanzilla/WoWUIBugs/issues/268
+if module:getGameVersion() < 3 then
+    self.button:RegisterForClicks("AnyUp", "AnyDown")
+    return
+end
+```
+
+**The fix (CT_BarMod_Use.lua, line 354):**
+
+```lua
+-- Guard SecureHandlerWrapScript calls - only use on Wrath+
+if module:getGameVersion() >= 3 then
+    SecureHandlerWrapScript(button, "OnDragStart", ...)
+    -- etc.
+end
+```
+
+**Why this approach:**
+
+The click registration pattern `RegisterForClicks("AnyUp", "AnyDown")` matches what LibActionButton uses for Retail/Dragonflight clients. This was identified as the fix for similar issues in [WoWUIBugs#268](https://github.com/Stanzilla/WoWUIBugs/issues/268).
+
+The `SecureHandlerWrapScript` guards prevent the secure handler errors while still allowing the core action button functionality to work correctly.
+
+---
+
 ## Features Disabled on TBC Anniversary
 
 Due to the UI architecture differences, these specific features are automatically disabled when running on TBC Anniversary:
@@ -192,6 +237,26 @@ CTMod exists because of the dedication of its maintainers across two decades of 
 
 - **This fork:** https://github.com/Ozy311/CTMod
 - **Upstream:** https://github.com/DDCorkum/CTMod
+
+---
+
+## Changelog
+
+### 11.1.0.2 (2025-01-28)
+- **Fixed:** CT_BarMod action bar buttons not responding to clicks on TBC Anniversary
+  - Changed click registration to use both up and down events (`AnyUp`, `AnyDown`)
+  - Guarded `SecureHandlerWrapScript` calls to prevent secure handler errors
+- Added dedicated TBC and Vanilla TOC files for proper game version detection
+
+### 11.1.0.1 (2025-01-27)
+- Initial TBC Anniversary compatibility release
+- **Fixed:** KeyRing button repositioning causing Layout() errors (CT_BottomBar)
+- **Fixed:** Micro Menu bar manipulation causing EditModeManager errors (CT_BottomBar)
+- **Fixed:** Missing LEARNED_SPELL_IN_TAB event registration (CT_RaidAssist)
+- **Fixed:** Missing ACTIVE_TALENT_GROUP_CHANGED event registration (CT_RaidAssist)
+
+### 11.0.2.5 and earlier
+- See upstream repository for historical changes: https://github.com/DDCorkum/CTMod
 
 ---
 
