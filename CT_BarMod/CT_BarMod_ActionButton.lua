@@ -514,10 +514,18 @@ end
 -- Update: Keybinds trigger Button31, but are now converted to LeftButton during execution so the macro conditional [button:1] will trigger.
 function actionButton:setClickDirection(onKeyDown, alsoOnMouseDown)
 
+	-- TBC/Classic Era: Register for both up AND down click events
+	-- TBC Anniversary runs on a newer engine that requires both (like Retail/Dragonflight)
+	-- See: https://github.com/Stanzilla/WoWUIBugs/issues/268
+	if module:getGameVersion() < 3 then
+		self.button:RegisterForClicks("AnyUp", "AnyDown")
+		return
+	end
+
 	if module:getGameVersion() >= 10 then
 		alsoOnMouseDown = true
 	end
-	
+
 	self.button:SetAttribute("type31", "")
 	if (self.onClickDirectionPreviouslySet) then
 		self.button:UnwrapScript(self.button, "OnClick")

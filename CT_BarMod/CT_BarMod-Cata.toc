@@ -1,5 +1,5 @@
 ## Interface: 40402
-## Version: 11.1.0.1
+## Version: 11.1.0.2
 ## Title: CT_BarMod
 ## Notes: Intuitive yet powerful action bar addon.
 ## DefaultState: Enabled

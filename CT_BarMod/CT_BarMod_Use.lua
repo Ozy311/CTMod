@@ -348,6 +348,11 @@ function useButton:constructor(buttonId, actionId, groupId, count, ...)
 		SecureHandlerSetFrameRef(button, "SpellFlyout", SpellFlyout);
 	end
 
+	-- TBC/Classic Era: Skip WrapScript calls - restricted environment doesn't support
+	-- the secure APIs used in the wrapped handlers (GetFrameRef, CallMethod, HasAction, etc.)
+	-- This causes "Invalid access of managed environments table" errors on button click.
+	if module:getGameVersion() >= 3 then
+
 	SecureHandlerWrapScript(button, "OnDragStart", button,
 		[=[
 			-- OnDragStart(self, button, kind, value, ...)
@@ -532,6 +537,8 @@ function useButton:constructor(buttonId, actionId, groupId, count, ...)
 			return nil;  -- we want the wrapped handler to be called with the original button
 		]=]
 	);
+
+	end  -- End version check (module:getGameVersion() >= 3)
 
 end
 
@@ -929,20 +936,29 @@ function useButton:hideOverlayGlow(arg1)
 	end
 end
 
-if ActionButton_UpdateFlyout then
-	-- prior to WoW 10.x
+-- Flyout support varies by game version
+-- Classic/TBC (version 1-2): No flyouts exist, use no-op
+-- Wrath-Cata (version 3-4): ActionButton_UpdateFlyout exists
+-- Retail 10.x+: New flyout API
+if module:getGameVersion() <= 2 then
+	-- Classic Era / TBC: Flyouts don't exist
+	function useButton:updateFlyout()
+		-- No-op: Flyouts were added in Cataclysm
+	end
+elseif ActionButton_UpdateFlyout then
+	-- Wrath through Cata (and possibly early Retail)
 	function useButton:updateFlyout()
 		-- Call Blizzard's function to update the flyout bar.
 		ActionButton_UpdateFlyout(self.button)
 	end
 else
-	-- WoW 10.x
+	-- WoW 10.x+
 	function useButton:updateFlyout()
 		if InCombatLockdown() then
 			module:afterCombat(useButton.updateFlyout, self)	-- to do this inside combat, it would be necessary to trigger the restricted environment whenever GetActionInfo() changes, and also having flyout info available beforehand
 			return
 		end
-		module.updateFlyout(self.button)	-- congfigures the arrow textures
+		module.updateFlyout(self.button)	-- configures the arrow textures
 		local type, id = GetActionInfo(self.button.action)
 		if type == "flyout" then
 			local numSlots = select(3,GetFlyoutInfo(id))
